@@ -21,9 +21,8 @@ Write the C Program using Linux Process API - fork(), wait(), exec()
 
 Test the C Program for the desired output. 
 
-# PROGRAM:
 
-## C Program to print process ID and parent Process ID using Linux API system calls
+## C Program to print process ID and parent Process ID using Linux API system calls :
 ```
 #include <stdio.h>
 #include <sys/types.h>
@@ -43,103 +42,78 @@ int main(void)
 	printf("The process id: %d\n",process_id);
 	printf("The process id of parent function: %d\n",p_process_id);
 	return 0; }
-
-
 ```
-## OUTPUT
-![alt text](output1.png)
+## OUTPUT :
 
+![image](https://github.com/user-attachments/assets/2b78bd43-7faa-459f-b4f5-a8317dff68a1)
 
-
-
-
-
-
-
-
-
-
-## C Program to create new process using Linux API system calls fork() and exit()
+## C Program to create new process using Linux API system calls fork() and exit() :
 
 ```
 #include <stdio.h>
-#include <sys/types.h>
+#include <stdlib.h>
 #include <unistd.h>
-#include<stdlib.h>
-int main()
-{ int pid; 
-pid=fork(); 
-if(pid == 0) 
-{ printf("Iam child my pid is %d\n",getpid()); 
-printf("My parent pid is:%d\n",getppid()); 
-exit(0); } 
-else{ 
-printf("I am parent, my pid is %d\n",getpid()); 
-sleep(100); 
-exit(0);} 
+int main() {
+    int pid;
+    pid = fork();
+    if (pid == -1) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
+    else if (pid == 0) {
+        printf("I am child, my pid is %d\n", getpid());
+        printf("My parent pid is: %d\n", getppid());
+        exit(EXIT_SUCCESS);
+    }
+    else {
+        printf("I am parent, my pid is %d\n", getpid());
+        sleep(100);
+        exit(EXIT_SUCCESS);
+    }
+    return 0;
+}
+```
+
+## OUTPUT :
+
+![image](https://github.com/user-attachments/assets/5d08e584-0923-4dcd-b7c4-84c11d87bdf2)
+
+
+## C Program to execute Linux system commands using Linux API system calls exec() family :
+```
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+int main() {
+    pid_t pid = fork();
+    if (pid < 0) {
+        perror("Fork failed");
+        exit(EXIT_FAILURE);
+    } else if (pid == 0) {
+        printf("This is the child process. Executing 'ls' command.\n");
+        execl("/bin/ls", "ls", "-l", NULL); // Lists files in long format
+        perror("execl failed");
+        exit(EXIT_FAILURE);
+    } else {
+        int status;
+        waitpid(pid, &status, 0); // Wait for the child to finish
+        if (WIFEXITED(status)) {
+            printf("Child process exited with status %d.\n", WEXITSTATUS(status));
+        } else {
+            printf("Child process did not exit normally.\n");
+        }
+        printf("Parent process is done.\n");
+    }
+    return 0;
 }
 ```
 
 
+## OUTPUT :
+![image](https://github.com/user-attachments/assets/f0b6a7ca-078f-4bf1-b326-cde2a5b521c4)
 
-
-
-
-
-
-
-
-
-## OUTPUT
-
-![alt text](outputcc_2.png)
-
-
-
-
-
-
-## C Program to execute Linux system commands using Linux API system calls exec() family
-
-```
-
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <sys/wait.h>
-#include <sys/types.h>
-int main()
-{       int status;
-        printf("Running ps with execlp\n");
-        execl("ps", "ps", "ax", NULL);
-        wait(&status);
-        if (WIFEXITED(status))
-                printf("child exited with status of %d\n", WEXITSTATUS(status));
-        else
-                puts("child did not exit successfully\n");
-        printf("Done.\n");
-printf("Running ps with execlp. Now with path specified\n");
-        execl("/bin/ps", "ps", "ax", NULL);
-        wait(&status);
-        if (WIFEXITED(status))
-                printf("child exited with status of %d\n", WEXITSTATUS(status));
-        else
-                puts("child did not exit successfully\n");
-        printf("Done.\n");
-        exit(0);}//C Program to execute Linux system commands using Linux API system calls exec() family
-
-
-
-```
-
-## OUTPUT
-
-![alt text](otuputcc_3.png)
-![alt text](outputcc_4.png)
-![alt text](outputcc_5.png)
-![alt text](outputcc_6.png)
-![alt text](outputcc_7.png)
-![alt text](outputcc_8.png)
 
 # RESULT:
 The programs are executed successfully.
